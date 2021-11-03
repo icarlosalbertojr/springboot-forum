@@ -1,9 +1,15 @@
 package com.icarlosalbertojr.forum.models;
 
-public class User {
+import javax.persistence.*;
 
+@Entity
+public class ForumUser {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+    private String fullName;
+    @Column(unique = true)
     private String email;
     private String password;
 
@@ -15,12 +21,12 @@ public class User {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getEmail() {

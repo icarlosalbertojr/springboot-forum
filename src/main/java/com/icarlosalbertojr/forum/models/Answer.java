@@ -1,14 +1,19 @@
 package com.icarlosalbertojr.forum.models;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
-
+@Entity
 public class Answer {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Topic topic;
-    private User author;
+    private String message;
     private LocalDateTime createdAt;
     private Boolean isSolution;
+    @ManyToOne
+    private Topic topic;
+    @ManyToOne
+    private ForumUser author;
 
     public Answer() {
         this.isSolution = false;
@@ -38,11 +43,11 @@ public class Answer {
         this.createdAt = createdAt;
     }
 
-    public User getAuthor() {
+    public ForumUser getAuthor() {
         return author;
     }
 
-    public void setAuthor(User author) {
+    public void setAuthor(ForumUser author) {
         this.author = author;
     }
 
@@ -52,5 +57,13 @@ public class Answer {
 
     public void setSolution(Boolean solution) {
         isSolution = solution;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }
