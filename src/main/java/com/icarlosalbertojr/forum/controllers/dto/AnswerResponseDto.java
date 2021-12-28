@@ -11,11 +11,11 @@ public class AnswerResponseDto {
     private LocalDateTime createdAt;
     private Boolean isSolution;
 
-    public AnswerResponseDto (Answer answer) {
+    public AnswerResponseDto(Answer answer) {
         this.id = answer.getId();
         this.message = answer.getMessage();
         this.createdAt = answer.getCreatedAt();
-        this.isSolution = answer.getSolution();
+        this.isSolution = answer.getIsSolution();
     }
 
     public Long getId() {

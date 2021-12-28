@@ -6,17 +6,17 @@ import com.icarlosalbertojr.forum.controllers.dto.TopicResponseDto;
 import com.icarlosalbertojr.forum.controllers.dto.TopicUpdateRequestDto;
 import com.icarlosalbertojr.forum.exceptions.DataNotFoundException;
 import com.icarlosalbertojr.forum.models.Course;
-import com.icarlosalbertojr.forum.models.ForumUser;
+import com.icarlosalbertojr.forum.models.User;
 import com.icarlosalbertojr.forum.models.Topic;
 import com.icarlosalbertojr.forum.repositories.CourseRepository;
-import com.icarlosalbertojr.forum.repositories.ForumUserRepository;
+import com.icarlosalbertojr.forum.repositories.UserRepository;
 import com.icarlosalbertojr.forum.repositories.TopicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class TopicService {
@@ -26,25 +26,21 @@ public class TopicService {
     @Autowired
     private CourseRepository courseRepository;
     @Autowired
-    private ForumUserRepository forumUserRepository;
+    private UserRepository forumUserRepository;
 
-    public List<TopicResponseDto> findAllTopics() {
-        return topicRepository.findAll()
-                .stream()
-                .map(TopicResponseDto::new)
-                .collect(Collectors.toList());
+    public Page<TopicResponseDto> findAllTopics(Pageable pageable) {
+        return topicRepository.findAll(pageable).map(TopicResponseDto::new);
     }
 
-    public List<TopicResponseDto> findTopicsByName(String courseName) {
-        return topicRepository.findByCourse_CourseName(courseName)
-                .stream()
-                .map(TopicResponseDto::new)
-                .collect(Collectors.toList());
+    public Page<TopicResponseDto> findTopicsByName(String courseName, Pageable pageable) {
+        return topicRepository
+                .findByCourse_CourseName(courseName, pageable)
+                .map(TopicResponseDto::new);
     }
 
     public TopicResponseDto createNewTopic(TopicRequestDto topicRequestDto) {
         Topic topic = new Topic();
-        ForumUser forumUser = forumUserRepository.findByEmail(topicRequestDto.getAuthorEmail());
+        User forumUser = forumUserRepository.findByEmail(topicRequestDto.getAuthorEmail()).get();
         Course course = courseRepository.findByCourseName(topicRequestDto.getCourseName());
         topic.setAuthor(forumUser);
         topic.setCourse(course);
@@ -59,7 +55,7 @@ public class TopicService {
         return new TopicDetailsResponseDto(topic);
     }
 
-    public TopicResponseDto updateTopic (Long id, TopicUpdateRequestDto topicUpdateRequestDto) {
+    public TopicResponseDto updateTopic(Long id, TopicUpdateRequestDto topicUpdateRequestDto) {
         Topic topic = getTopicById(id);
         topic.setTitle(topicUpdateRequestDto.getTitle());
         topic.setMessage(topicUpdateRequestDto.getMessage());

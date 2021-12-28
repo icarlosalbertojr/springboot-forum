@@ -1,6 +1,6 @@
 package com.icarlosalbertojr.forum.exceptions;
 
-public class DataNotFoundException extends RuntimeException{
+public class DataNotFoundException extends RuntimeException {
 
     private String message;
 
